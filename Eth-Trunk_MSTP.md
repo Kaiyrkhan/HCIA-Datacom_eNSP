@@ -1,3 +1,30 @@
+# Eth-Trunk and MSTP Configuration in eNSP Simulator
+
+**HQ-D1 and HQ-D2**
+
+```shell
+vlan batch 10 20
+
+display vlan
+```
+
+Step1: Eth-Trunk конфигурациялау
+```shell
+interface Eth-Trunk1
+ mode lacp-static
+ port link-type trunk
+ port trunk allow-pass vlan 10 20
+```
+
+Step2: Физикалық порттарды Eth-Trunk-қа қосу
+```shell
+interface g0/0/1
+ eth-trunk 1
+
+interface g0/0/2
+ eth-trunk 1
+```
+
 # Eth-Trunk and MSTP Configuration in a Production Environment
 
 
