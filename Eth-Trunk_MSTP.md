@@ -60,8 +60,8 @@ Step4: Тексеру (Verification)
 display eth-trunk 1
 
 display stp brief
-display stp instance 1
-display stp instance 2
+display stp instance 1 brief
+display stp instance 2 brief
 ```
 
 ```shell
@@ -70,7 +70,6 @@ display lacp statistics eth-trunk 1
 ```
 
 # Eth-Trunk and MSTP configuration in a Production Environment
-
 
 **HQ-D1 and HQ-D2**
 
