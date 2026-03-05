@@ -18,6 +18,7 @@ R1
 undo terminal monitor
 system-view
 sysname R1
+
 int g0/0/0
  ip address 10.1.1.101 30
 int loopback0
@@ -31,6 +32,7 @@ R2
 undo terminal monitor
 system-view
 sysname R3
+
 int g0/0/1
  ip address 10.1.1.102 30
 quit
@@ -100,9 +102,9 @@ Verification:
 
 R1
 ```shell
-<R1> ping -a 10.1.1.101 10.1.1.102
-<R1> ping -a 50.1.1.1 10.1.1.102
-<R1> ping -a 50.2.2.2 10.1.1.102
+ping -a 10.1.1.101 10.1.1.102
+ping -a 50.1.1.1 10.1.1.102
+ping -a 50.2.2.2 10.1.1.102
 ```
 
 R2
