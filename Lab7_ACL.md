@@ -60,16 +60,73 @@ ping 50.2.2.2
 ping 10.1.1.101
 ```
 
-## Result:
-**Telnet**  
-telnet -a 10.1.1.101 10.1.1.102 (deny)  
-telnet -a 50.1.1.1 10.1.1.102 (deny)  
-telnet -a 50.2.2.2 10.1.1.102 (permit)  
-**ICMP**  
-ping -a 50.2.2.2 10.1.1.102 (deny)  
-ping -a 50.1.1.1 10.1.1.102 (permit)  
-ping -a 10.1.1.101 10.1.1.102 (permit)  
+## Step3: Configure Remote Access (Telnet)
 
-
+R2
 ```shell
+telnet server enable
+user-interface vty 0 4
+ user privilege level 3
+ set authentication password cipher Huawei@123
 ```
+
+## Step4: Create ACL for Telnet
+
+R2
+```shell
+acl 3001
+ rule 5 permit tcp source 50.2.2.2 0 destination 10.1.1.102 0 destination-port eq 23
+ rule 10 deny tcp source any
+ display this
+
+user-interface vty 0 4
+acl 3001 inbound
+немесе
+int g0/0/1
+traffic-filter inbound acl 3001
+
+display acl 3001
+display cu section acl
+```
+
+Verification:
+```shell
+<R1> telnet -a 10.1.1.101 10.1.1.102
+<R1> telnet -a 50.1.1.1 10.1.1.102
+<R1> telnet -a 50.2.2.2 10.1.1.102
+```
+
+## Step6: Create ACL for ICMP
+
+R1
+```shell
+<R1> ping -a 10.1.1.101 10.1.1.102
+<R1> ping -a 50.1.1.1 10.1.1.102
+<R1> ping -a 50.2.2.2 10.1.1.102
+```
+
+R2
+```shell
+acl 3002
+ rule 5 deny icmp source 50.2.2.2 0 destination 10.1.1.102 0
+ rule 10 permit icmp source any
+
+int g0/0/1
+traffic-filter inbound acl 3002
+
+display acl 3002
+display cu section acl
+```
+
+Verification:
+```shell
+<R1> ping -a 10.1.1.101 10.1.1.102
+Reply from 10.1.1.102: bytes=56 Sequence=1 ttl=255 time=20 ms
+
+<R1> ping -a 50.1.1.1 10.1.1.102
+Reply from 10.1.1.102: bytes=56 Sequence=1 ttl=255 time=20 ms
+
+<R1> ping -a 50.2.2.2 10.1.1.102
+Request time out
+```
+
