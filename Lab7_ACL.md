@@ -96,7 +96,7 @@ Verification:
 <R1> telnet -a 50.2.2.2 10.1.1.102
 ```
 
-## Step6: Create ACL for ICMP
+## Step5: Create ACL for ICMP
 
 R1
 ```shell
