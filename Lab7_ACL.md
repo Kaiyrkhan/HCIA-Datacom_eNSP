@@ -209,3 +209,11 @@ int g0/0/0
 display acl 3000
 display cu section acl
 ```
+Verification
+```shell
+<PC1> ping 172.16.10.102
+<PC1> ping 172.16.20.101
+
+<PC3> ping 172.16.20.102
+<PC3> ping 172.16.10.101
+```
