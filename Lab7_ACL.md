@@ -132,3 +132,80 @@ Reply from 10.1.1.102: bytes=56 Sequence=1 ttl=255 time=20 ms
 Request time out
 ```
 
+## inter-VLAN Routing
+
+SW1
+```shell
+undo terminal monitor
+system-view
+sysname SW1
+```
+```shell
+vlan batch 10 20
+display vlan
+
+int g0/0/2
+ port link-type access
+ port default vlan 10
+int g0/0/3
+ port link-type access
+ port default vlan 10
+
+int g0/0/4
+ port link-type access
+ port default vlan 20
+int g0/0/5
+ port link-type access
+ port default vlan 20
+
+display vlan
+```
+```shell
+int g0/0/1
+ port link-type trunk
+ port trunk allow-pass vlan 10 20
+ display this
+```
+
+RT1
+```shell
+undo terminal monitor
+system-view
+sysname RT1
+
+int g0/0/0.10
+ ip address 172.16.10.1 24
+ dot1q termination vid 10
+ arp broadcast enable
+quit
+int g0/0/0.20
+ ip address 172.16.20.1 24
+ dot1q termination vid 20
+ arp broadcast enable
+quit
+
+display ip int brief
+```
+
+Verification
+```shell
+<PC1> ping 172.16.10.102
+<PC1> ping 172.16.20.101
+<PC1> ping 172.16.20.102
+```
+
+RT2
+```shell
+acl 3000
+ rule 5 deny ip source 172.16.10.0 0.0.0.255 destination 172.16.20.0 0.0.0.255
+ rule 10 permit ip source any destination any
+ display this
+
+int g0/0/0
+ traffic-filter inbound acl 3000
+ display this
+```
+```shell
+display acl 3000
+display cu section acl
+```
